@@ -4,16 +4,14 @@ using UnityEngine;
 
 public class Robot : MonoBehaviour
 {
-    public Texture2D texture;
-
-    ProceduralMesh proceduralMesh;
-    private MeshCollider mc;
-
     public float Width = 1f;
     public float Length = 1f;
     public float Height = 1f;
+    private bool editorMode = true;
+    public Texture2D texture;
 
-    public bool flipped = false;
+    private MeshCollider mc;
+    private ProceduralMesh proceduralMesh;
 
     // Use this for initialization
     void Start()
@@ -22,19 +20,19 @@ public class Robot : MonoBehaviour
         proceduralMesh.Parameters["Width"] = Width;
         proceduralMesh.Parameters["Length"] = Length;
         proceduralMesh.Parameters["Height"] = Height;
-
         proceduralMesh.Generate(2);
-        //proceduralMesh.FlipNormals();
-
+        proceduralMesh.FlipNormals();
         gameObject.AddComponent<MeshFilter>().mesh = proceduralMesh.Mesh;
-        
-        gameObject.AddComponent<MeshRenderer>().material = new Material(Shader.Find("Standard"));
-        gameObject.GetComponent<MeshRenderer>().material.EnableKeyword("_MainTex");
-        gameObject.GetComponent<MeshRenderer>().material.SetTexture("_MainTex", texture);
-          
+
         mc = gameObject.AddComponent<MeshCollider>();
         mc.sharedMesh = GetComponent<MeshFilter>().mesh;
         mc.convex = true;
+        
+
+        MeshRenderer mr = gameObject.AddComponent<MeshRenderer>();
+        mr.material = new Material(Shader.Find("Standard"));
+        mr.material.EnableKeyword("_MainTex");
+        mr.material.SetTexture("_MainTex", texture);
 
         /*GameObject go = new GameObject("Bounds");
         go.transform.parent = this.transform;
@@ -44,11 +42,11 @@ public class Robot : MonoBehaviour
         go.layer = LayerMask.NameToLayer("Ignore Raycast");
         */
 
-        gameObject.AddComponent<MeshDeformer>();
-        gameObject.GetComponent<MeshDeformer>().springForce = 0;
+        MeshDeformer md = gameObject.AddComponent<MeshDeformer>();
+        md.springForce = 0;
 
-        Rigidbody rb = gameObject.AddComponent<Rigidbody>();
-        rb.mass = 50;//gameObject.GetComponent<Rigidbody>();
+        //Rigidbody rb = gameObject.AddComponent<Rigidbody>();
+        //rb.mass = 50;//gameObject.GetComponent<Rigidbody>();
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -56,10 +54,25 @@ public class Robot : MonoBehaviour
         mc.sharedMesh = GetComponent<MeshFilter>().mesh;
     }
 
+    void EnableEditorMode()
+    {
+
+    }
+
+    void EnableSimulationMode()
+    {
+
+    }
+
     // Update is called once per frame
     void FixedUpdate()
     {
-        /*if (Width != proceduralMesh.Parameters["Width"] || Height != proceduralMesh.Parameters["Height"] || Length != proceduralMesh.Parameters["Length"])
+        if (editorMode) EditorFixedUpdate();
+    }
+
+    void EditorFixedUpdate()
+    {
+        if (Width != proceduralMesh.Parameters["Width"] || Height != proceduralMesh.Parameters["Height"] || Length != proceduralMesh.Parameters["Length"])
         {
             proceduralMesh.Parameters["Width"] = Width;
             proceduralMesh.Parameters["Length"] = Length;
@@ -73,10 +86,10 @@ public class Robot : MonoBehaviour
             gameObject.AddComponent<BoxCollider>();
         }
 
-        if (flipped != proceduralMesh.Flipped)
+        if (!proceduralMesh.Flipped)
         {
             proceduralMesh.FlipNormals();
-            gameObject.AddComponent<MeshCollider>();
-        }*/
+            //gameObject.GetComponent<MeshFilter>().mesh = proceduralMesh.Mesh;
+        }
     }
 }

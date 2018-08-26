@@ -10,8 +10,8 @@ public abstract class ProceduralMesh
 
     public ProceduralMesh()
     {
-        this.Parameters = new Dictionary<string, float>();
-        this.Flipped = false;
+        Parameters = new Dictionary<string, float>();
+        Flipped = false;
     }
 
     private int SubdivideGetNewVertex(int i1, int i2, Dictionary<uint, int> newVertices, List<Vector3> vertices, List<Vector3> normals, List<Vector2> uvs)
@@ -40,12 +40,12 @@ public abstract class ProceduralMesh
     {
         Dictionary<uint, int> newVertices = new Dictionary<uint, int>();
 
-        List<Vector3> vertices = new List<Vector3>(this.Mesh.vertices);
-        List<Vector3> normals = new List<Vector3>(this.Mesh.normals);
-        List<Vector2> uvs = new List<Vector2>(this.Mesh.uv);
+        List<Vector3> vertices = new List<Vector3>(Mesh.vertices);
+        List<Vector3> normals = new List<Vector3>(Mesh.normals);
+        List<Vector2> uvs = new List<Vector2>(Mesh.uv);
         List<int> indices = new List<int>();
 
-        int[] triangles = this.Mesh.triangles;
+        int[] triangles = Mesh.triangles;
         for (int i = 0; i < triangles.Length; i += 3)
         {
             int i1 = triangles[i + 0];
@@ -60,27 +60,27 @@ public abstract class ProceduralMesh
             indices.Add(i3); indices.Add(c); indices.Add(b);
             indices.Add(a); indices.Add(b); indices.Add(c); // center triangle
         }
-        this.Mesh.Clear();
-        this.Mesh.vertices = vertices.ToArray();
-        this.Mesh.normals = normals.ToArray();
-        this.Mesh.triangles = indices.ToArray();
-        this.Mesh.uv = uvs.ToArray();
-        this.Mesh.RecalculateNormals();
-        this.Mesh.RecalculateBounds();
-        this.Mesh.RecalculateTangents();
+        Mesh.Clear();
+        Mesh.vertices = vertices.ToArray();
+        Mesh.normals = normals.ToArray();
+        Mesh.triangles = indices.ToArray();
+        Mesh.uv = uvs.ToArray();
+        Mesh.RecalculateNormals();
+        Mesh.RecalculateBounds();
+        Mesh.RecalculateTangents();
     }
 
     public void FlipNormals()
     {
-        Vector3[] normals = this.Mesh.normals;
+        Vector3[] normals = Mesh.normals;
         for (int i = 0; i < normals.Length; i++)
             normals[i] = -normals[i];
-        
-        this.Mesh.normals = normals;
 
-        for (int m = 0; m < this.Mesh.subMeshCount; m++)
+        Mesh.normals = normals;
+
+        for (int m = 0; m < Mesh.subMeshCount; m++)
         {
-            int[] triangles = this.Mesh.GetTriangles(m);
+            int[] triangles = Mesh.GetTriangles(m);
             
             for (int i = 0; i < triangles.Length; i += 3)
             {
@@ -89,19 +89,19 @@ public abstract class ProceduralMesh
                 triangles[i + 1] = temp;
             }
 
-            this.Mesh.SetTriangles(triangles, m);
+            Mesh.SetTriangles(triangles, m);
         }
 
-        this.Flipped = !this.Flipped;
+        Flipped = !Flipped;
     }
 
     public void Generate(int subdivisions)
     {
-        this.Mesh = GenerateMesh();
+        Mesh = GenerateMesh();
 
-        this.Mesh.RecalculateNormals();
-        this.Mesh.RecalculateBounds();
-        this.Mesh.RecalculateTangents();
+        Mesh.RecalculateNormals();
+        Mesh.RecalculateBounds();
+        Mesh.RecalculateTangents();
 
         for (int i = 0; i < subdivisions; i++)
             Subdivide();

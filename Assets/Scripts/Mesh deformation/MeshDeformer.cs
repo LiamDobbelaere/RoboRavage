@@ -4,15 +4,16 @@ using UnityEngine;
 
 [RequireComponent(typeof(MeshFilter))]
 public class MeshDeformer : MonoBehaviour {
-	Mesh deformingMesh;
-	Vector3[] originalVertices, displacedVertices;
-	Vector3[] vertexVelocities;
 	public float springForce = 20f;
 	public float damping = 5f;
-	float uniformScale = 1f;
 
-	// Use this for initialization
-	void Start () {
+    private float uniformScale = 1f;
+    private Mesh deformingMesh;
+    private Vector3[] originalVertices, displacedVertices;
+    private Vector3[] vertexVelocities;
+
+    // Use this for initialization
+    void Start () {
 		uniformScale = transform.localScale.x;
 
 		deformingMesh = GetComponent<MeshFilter> ().mesh;
@@ -33,8 +34,8 @@ public class MeshDeformer : MonoBehaviour {
 
         //GetComponent<MeshCollider>().sharedMesh = deformingMesh;
 		deformingMesh.vertices = displacedVertices;
-		deformingMesh.RecalculateNormals ();
-
+		deformingMesh.RecalculateNormals();
+        deformingMesh.RecalculateBounds();
 	}
 
     void OnCollisionEnter(Collision collision)
