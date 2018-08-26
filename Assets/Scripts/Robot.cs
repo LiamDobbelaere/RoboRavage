@@ -11,7 +11,7 @@ public class Robot : MonoBehaviour
     public Texture2D texture;
 
     private MeshCollider mc;
-    private ProceduralMesh proceduralMesh;
+    public ProceduralMesh proceduralMesh;
 
     // Use this for initialization
     void Start()
@@ -22,6 +22,7 @@ public class Robot : MonoBehaviour
         proceduralMesh.Parameters["Height"] = Height;
         proceduralMesh.Generate(2);
         proceduralMesh.FlipNormals();
+
         gameObject.AddComponent<MeshFilter>().mesh = proceduralMesh.Mesh;
 
         mc = gameObject.AddComponent<MeshCollider>();
