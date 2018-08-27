@@ -367,9 +367,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 344eec73c2212ad4fbe05a67d1b29a3d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Width: 1
-  Length: 1
-  Height: 1
+  Width: 0.25
+  Length: 0.25
+  Height: 0.25
   texture: {fileID: 0}
 --- !u!4 &1461649334
 Transform:
@@ -429,7 +429,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.3
+  near clip plane: 0.01
   far clip plane: 1000
   field of view: 60
   orthographic: 0
@@ -474,8 +474,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 1461649334}
-  distance: 5
-  maxDistance: 5
+  distance: 1
+  maxDistance: 2
   minDistance: 0.1
-  xSpeed: 125
-  zSpeed: 12
+  rotateSpeed: 125
+  panSpeed: 4

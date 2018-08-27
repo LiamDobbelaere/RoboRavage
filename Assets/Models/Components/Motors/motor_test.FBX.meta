@@ -8,11 +8,15 @@ ModelImporter:
     100004: Base
     100006: //RootNode
     100008: Shaft
+    100010: Attachment1
+    100012: Attachment2
     400000: Attachment001
     400002: Attachment002
     400004: Base
     400006: //RootNode
     400008: Shaft
+    400010: Attachment1
+    400012: Attachment2
     2100000: No Name
     2100002: 01 - Default
     2300000: Base

@@ -8,14 +8,17 @@ public class RobotEditor : MonoBehaviour
     public float distance = 5.0f;
     public float maxDistance = 5.0f;
     public float minDistance = 1f;
-    public float xSpeed = 125.0f;
-    public float zSpeed = 125.0f;
+    public float rotateSpeed = 125.0f;
+    public float panSpeed = 8f;
 
     bool rightclicked;
     bool first;
     float x = 0.0f;
     float y = 0.0f;
     Vector3 panDeltaPosition;
+
+    Quaternion targetRotation;
+    Vector3 targetPosition;
 
     // Use this for initialization
     void Start()
@@ -24,15 +27,19 @@ public class RobotEditor : MonoBehaviour
         x = angles.y;
         y = angles.z;
 
-        Quaternion rotation = Quaternion.Euler(0.1f * xSpeed * distance * 0.02f, 0f * xSpeed * distance * 0.02f, 0);
+        Quaternion rotation = Quaternion.Euler(0.1f * rotateSpeed * distance * 0.02f, 0f * rotateSpeed * distance * 0.02f, 0);
         Vector3 position = rotation * new Vector3(0.0f, 0.0f, -distance) + target.position;
-        transform.rotation = rotation;
-        transform.position = position;
-
+        targetRotation = rotation;
+        targetPosition = position;
     }
 
     // Update is called once per frame
     void Update()
+    {
+        UpdateCameraPosition();
+    }
+
+    void UpdateCameraPosition()
     {
         distance = Mathf.Clamp(distance + -Input.GetAxis("Mouse ScrollWheel"), minDistance, maxDistance);
 
@@ -42,21 +49,24 @@ public class RobotEditor : MonoBehaviour
 
             if (Input.GetMouseButton(1))
             {
-                x += Input.GetAxis("Mouse X") * xSpeed * 0.02f;
-                y -= Input.GetAxis("Mouse Y") * xSpeed * 0.02f;
+                x += Input.GetAxis("Mouse X") * rotateSpeed * 0.02f;
+                y -= Input.GetAxis("Mouse Y") * rotateSpeed * 0.02f;
             }
             else if (Input.GetMouseButton(2))
             {
-                panDeltaPosition= new Vector3(
-                    panDeltaPosition.x + Input.GetAxis("Mouse X") * zSpeed * 0.02f,
-                    panDeltaPosition.y + Input.GetAxis("Mouse Y") * zSpeed * 0.02f,
+                panDeltaPosition = new Vector3(
+                    panDeltaPosition.x + Input.GetAxis("Mouse X") * panSpeed * 0.02f,
+                    panDeltaPosition.y + Input.GetAxis("Mouse Y") * panSpeed * 0.02f,
                     panDeltaPosition.z);
             }
 
             Quaternion rotation = Quaternion.Euler(y, x, 0);
             Vector3 position = rotation * new Vector3(0.0f, 0.0f, -distance) + target.localPosition;
-            transform.rotation = rotation;
-            transform.position = position + (panDeltaPosition.x * transform.right) + (panDeltaPosition.y * transform.up);
+            targetRotation = rotation;
+            targetPosition = position + (panDeltaPosition.x * transform.right) + (panDeltaPosition.y * transform.up);
         }
+
+        transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * 20f);
+        transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * 20f);
     }
 }
