@@ -21,13 +21,14 @@ public class Robot : MonoBehaviour
         proceduralMesh.Parameters["Length"] = Length;
         proceduralMesh.Parameters["Height"] = Height;
         proceduralMesh.Generate(2);
-        proceduralMesh.FlipNormals();
+        //proceduralMesh.FlipNormals(); Flip normals for editor, not for testing
 
         gameObject.AddComponent<MeshFilter>().mesh = proceduralMesh.Mesh;
 
-        mc = gameObject.AddComponent<MeshCollider>();
+        mc = gameObject.GetComponent<MeshCollider>();
         mc.sharedMesh = GetComponent<MeshFilter>().mesh;
         //mc.convex = true; Off for editor, on for testing
+        mc.convex = true;
 
         MeshRenderer mr = gameObject.AddComponent<MeshRenderer>();
         mr.material = new Material(Shader.Find("Standard"));
