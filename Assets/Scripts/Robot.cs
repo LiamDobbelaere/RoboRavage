@@ -27,8 +27,7 @@ public class Robot : MonoBehaviour
 
         mc = gameObject.AddComponent<MeshCollider>();
         mc.sharedMesh = GetComponent<MeshFilter>().mesh;
-        mc.convex = true;
-        
+        //mc.convex = true; Off for editor, on for testing
 
         MeshRenderer mr = gameObject.AddComponent<MeshRenderer>();
         mr.material = new Material(Shader.Find("Standard"));

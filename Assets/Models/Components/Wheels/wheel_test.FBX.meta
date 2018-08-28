@@ -1,30 +1,14 @@
 fileFormatVersion: 2
-guid: 20179df368db2114eb66c60e2b2ce8c9
+guid: 5d921dfb85dc0074ca6d55b66c2d745d
 ModelImporter:
   serializedVersion: 23
   fileIDToRecycleName:
-    100000: Attachment001
-    100002: Attachment002
-    100004: Base
-    100006: //RootNode
-    100008: Shaft
-    100010: Attachment1
-    100012: Attachment2
-    400000: Attachment001
-    400002: Attachment002
-    400004: Base
-    400006: //RootNode
-    400008: Shaft
-    400010: Attachment1
-    400012: Attachment2
+    100000: //RootNode
+    400000: //RootNode
     2100000: No Name
-    2100002: 01 - Default
-    2300000: Base
-    2300002: Shaft
-    3300000: Base
-    3300002: Shaft
-    4300000: Base
-    4300002: Shaft
+    2300000: //RootNode
+    3300000: //RootNode
+    4300000: Cylinder001
   externalObjects: {}
   materials:
     importMaterials: 1

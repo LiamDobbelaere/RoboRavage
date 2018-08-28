@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class RobotEditor : MonoBehaviour
 {
+    /* Camera Controls */
     public Transform target;
     public float distance = 5.0f;
     public float maxDistance = 5.0f;
@@ -11,14 +12,16 @@ public class RobotEditor : MonoBehaviour
     public float rotateSpeed = 125.0f;
     public float panSpeed = 8f;
 
-    bool rightclicked;
-    bool first;
-    float x = 0.0f;
-    float y = 0.0f;
-    Vector3 panDeltaPosition;
+    private float x = 0.0f;
+    private float y = 0.0f;
+    private Vector3 panDeltaPosition;
+    private Quaternion targetRotation;
+    private Vector3 targetPosition;
 
-    Quaternion targetRotation;
-    Vector3 targetPosition;
+    /* Components */
+    public GameObject[] motors;
+    private RobotComponent currentComponent;
+    private int currentAttachmentPoint;
 
     // Use this for initialization
     void Start()
@@ -31,12 +34,34 @@ public class RobotEditor : MonoBehaviour
         Vector3 position = rotation * new Vector3(0.0f, 0.0f, -distance) + target.position;
         targetRotation = rotation;
         targetPosition = position;
+
+        currentComponent = Instantiate(motors[0]).GetComponent<RobotComponent>();
     }
 
     // Update is called once per frame
     void Update()
     {
         UpdateCameraPosition();
+        UpdateComponentPosition();
+    }
+
+    void UpdateComponentPosition()
+    {
+        if (Input.GetButtonUp("Jump"))
+        {
+            currentAttachmentPoint++;
+            if (currentAttachmentPoint >= currentComponent.attachmentPoints.Count) currentAttachmentPoint = 0;
+        }
+
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit, 1000f))
+        {
+            Vector3 attachmentPosition = currentComponent.attachmentPoints[currentAttachmentPoint].transform.position - currentComponent.transform.position;   
+
+            currentComponent.transform.position = hit.point - attachmentPosition;
+            currentComponent.transform.rotation = currentComponent.attachmentPoints[currentAttachmentPoint].transform.localRotation;
+        }
     }
 
     void UpdateCameraPosition()
