@@ -44,7 +44,6 @@ public class Robot : MonoBehaviour
         */
 
         MeshDeformer md = gameObject.AddComponent<MeshDeformer>();
-        md.springForce = 0;
 
         //Rigidbody rb = gameObject.AddComponent<Rigidbody>();
         //rb.mass = 50;//gameObject.GetComponent<Rigidbody>();

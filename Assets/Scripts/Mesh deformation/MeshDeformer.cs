@@ -4,39 +4,31 @@ using UnityEngine;
 
 [RequireComponent(typeof(MeshFilter))]
 public class MeshDeformer : MonoBehaviour {
-	public float springForce = 20f;
-	public float damping = 5f;
-
-    private float uniformScale = 1f;
-    private Mesh deformingMesh;
     private Vector3[] originalVertices, displacedVertices;
-    private Vector3[] vertexVelocities;
+    private Mesh deformingMesh;
 
     // Use this for initialization
     void Start () {
-		uniformScale = transform.localScale.x;
-
-		deformingMesh = GetComponent<MeshFilter> ().mesh;
+		deformingMesh = GetComponent<MeshFilter>().mesh;
 		originalVertices = deformingMesh.vertices;
 		displacedVertices = new Vector3[originalVertices.Length];
-		vertexVelocities = new Vector3[originalVertices.Length];
 
 		for (int i = 0; i < originalVertices.Length; i++) {
-			displacedVertices [i] = originalVertices [i];
+			displacedVertices[i] = originalVertices[i];
 		}
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		for (int i = 0; i < displacedVertices.Length; i++) {
-			UpdateVertex (i);
-		}
 
-        //GetComponent<MeshCollider>().sharedMesh = deformingMesh;
-		deformingMesh.vertices = displacedVertices;
-		deformingMesh.RecalculateNormals();
+    }
+
+    void UpdateMesh()
+    {
+        deformingMesh.vertices = displacedVertices;
+        deformingMesh.RecalculateNormals();
         deformingMesh.RecalculateBounds();
-	}
+    }
 
     void OnCollisionEnter(Collision collision)
     {
@@ -44,41 +36,62 @@ public class MeshDeformer : MonoBehaviour {
         {
             float mass = collision.collider.GetComponent<Rigidbody>().mass / GetComponent<Rigidbody>().mass;
 
-            AddDeformingForce(contact.point, contact.normal, collision.relativeVelocity.sqrMagnitude * mass);
+            AddDeformingForce(contact.point, contact.normal, collision.relativeVelocity.magnitude * 0.01f);
         }
-        if (collision.relativeVelocity.magnitude > 2)
-        {
 
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        UpdateMesh();
+    }
+
+    struct Vector3Ref
+    {
+        public int index;
+        public Vector3 vector;
+
+        public Vector3Ref(int index, Vector3 vector)
+        {
+            this.index = index;
+            this.vector = vector;
         }
     }
 
-	public void AddDeformingForce(Vector3 point, Vector3 normal, float force) {
-		point = transform.InverseTransformPoint (point);
-		for (int i = 0; i < displacedVertices.Length; i++) {
-			AddForceToVertex (i, point, normal, force);
-		}
-		//Debug.DrawLine (Camera.main.transform.position, point);
-	}
+    public void AddDeformingForce(Vector3 point, Vector3 normal, float force) {
+        List<Vector3Ref> sortedVertices = new List<Vector3Ref>();
+        for (int i = 0; i < displacedVertices.Length; i++)
+        {
+            sortedVertices.Add(new Vector3Ref(i, displacedVertices[i]));
+        }
 
-    void AddForceToVertex(int i, Vector3 point, Vector3 normal, float force) {
-		Vector3 pointToVertex = displacedVertices [i] - point;
-		pointToVertex *= uniformScale;
+        sortedVertices.Sort((v1, v2) => {
+            float d1 = (transform.TransformPoint(v1.vector) - point).sqrMagnitude;
+            float d2 = (transform.TransformPoint(v2.vector) - point).sqrMagnitude;
 
-		float attenuatedForce = force / (1f + pointToVertex.sqrMagnitude);
-		float velocity = attenuatedForce * Time.deltaTime;
+            return d1.CompareTo(d2);
+        });
 
-		vertexVelocities[i] += normal * velocity;
+        for (int i = 0; i < 3; i++)
+        {
+            Vector3Ref r = sortedVertices[i];
 
-		UpdateVertex (i);
-	}
+            r.vector = sortedVertices[i].vector + normal * force;
 
-	void UpdateVertex(int i) {
-		Vector3 velocity = vertexVelocities [i];
-		Vector3 displacement = displacedVertices [i] - originalVertices [i];
-		displacement *= uniformScale;
-		velocity -= displacement * springForce * Time.deltaTime;
-		velocity *= 1f - damping * Time.deltaTime;
-		vertexVelocities [i] = velocity;
-		displacedVertices [i] += velocity * (Time.deltaTime / uniformScale);
-	}
+            sortedVertices[i] = r;
+        }
+
+        foreach (Vector3Ref vectorRef in sortedVertices)
+        {
+            displacedVertices[vectorRef.index] = vectorRef.vector;
+        }
+
+        //displacedVertices = sortedVertices.ToArray();
+
+        /*if (smallestIndex >= 0 && ((displacedVertices[smallestIndex] - originalVertices[smallestIndex]).sqrMagnitude < 0.002f))
+        {
+
+            displacedVertices[smallestIndex] = displacedVertices[smallestIndex] + normal * force;
+        }*/
+    }
 }

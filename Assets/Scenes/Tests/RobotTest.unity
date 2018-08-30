@@ -166,6 +166,7 @@ GameObject:
   - component: {fileID: 118330335}
   - component: {fileID: 118330329}
   - component: {fileID: 118330331}
+  - component: {fileID: 118330336}
   m_Layer: 0
   m_Name: sawblade_test
   m_TagString: Untagged
@@ -191,13 +192,13 @@ HingeJoint:
     targetPosition: 0
   m_UseMotor: 1
   m_Motor:
-    targetVelocity: 350
-    force: 350
+    targetVelocity: 800
+    force: 800
     freeSpin: 0
   m_UseLimits: 0
   m_Limits:
-    min: 0
-    max: 0
+    min: -45
+    max: 45
     bounciness: 0
     bounceMinVelocity: 0.2
     contactDistance: 0
@@ -306,6 +307,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   other: {fileID: 1547486015}
+--- !u!114 &118330336
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 118330328}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f63b46a85cd64f34eb2c1c2d2ef2db99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &227896680
 GameObject:
   m_ObjectHideFlags: 0
@@ -1659,8 +1671,8 @@ HingeJoint:
     freeSpin: 0
   m_UseLimits: 0
   m_Limits:
-    min: 0
-    max: 0
+    min: -45
+    max: 45
     bounciness: 0
     bounceMinVelocity: 0.2
     contactDistance: 0

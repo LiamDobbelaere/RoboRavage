@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using B83.MeshHelper;
 
 public abstract class ProceduralMesh
 {
@@ -105,6 +106,13 @@ public abstract class ProceduralMesh
 
         for (int i = 0; i < subdivisions; i++)
             Subdivide();
+
+        AutoWeldVertices();
+    }
+
+    public void AutoWeldVertices()
+    {
+        new MeshWelder(Mesh).Weld();
     }
 
     protected abstract Mesh GenerateMesh();
